@@ -1,0 +1,16 @@
+var a,b,c;
+begin
+a:=2;
+b:=1;
+read(c);
+if c<>3
+ then
+   begin
+   c:=a+b;
+   write(c);
+   end
+ else
+  begin  c:=a-b;
+  write(c);
+  end
+end. 
