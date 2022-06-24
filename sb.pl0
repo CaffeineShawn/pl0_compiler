@@ -1,7 +1,7 @@
 var a,b;
 begin
   b:=1;
-  if b<2 then
+  if b!=2 then
     a:=3
   else
     a:=4;

@@ -54,6 +54,13 @@ void getsym()
 	while (ch == ' ')
 		getch();
 
+    if (ch == '{') {
+        do {
+            getch();
+        } while (ch != '}');
+        getch();
+    }
+
 	if (isalpha(ch))
 	{ // symbol is a reserved word or an identifier.
 		k = 0;
@@ -121,17 +128,20 @@ void getsym()
 		{
 			sym = SYM_LEQ;     // <=
 			getch();
-		}
-		else if (ch == '>')
-		{
-			sym = SYM_NEQ;     // <>
-			getch();
-		}
-		else
-		{
+		} else {
 			sym = SYM_LES;     // <
 		}
 	}
+    else if (ch == '!')
+    {
+        getch();
+        if (ch == '=') {
+            sym = SYM_NEQ; // !=
+            getch();
+        } else {
+            sym = SYM_NULL; // illegal
+        }
+    }
 	else
 	{ // other tokens
 		i = NSYM;
@@ -465,7 +475,7 @@ void statement(symset fsys)
 {
 	int i, cx1, cx2;
 	symset set1, set;
-    printSet(fsys, symtypeDescription);
+//    printSet(fsys, symtypeDescription);
 	if (sym == SYM_IDENTIFIER)
 	{ // variable assignment
 		mask* mk;
@@ -544,14 +554,14 @@ void statement(symset fsys)
          * 跳转到else
          */
         if (sym == SYM_ELSE) {
+            getsym();
             cx2 = cx;
-            gen(JMP, 0,0);
-            code[cx1].a = cx;
-            getsym(); // statement后，cx为then
+            gen(JMP, 0,0); // 直接跳转，执行完then后面的则跳转到条件语句最后面
+            code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句
 
 
             statement(fsys);
-            code[cx2].a = cx;
+            code[cx2].a = cx; // 回填直接跳转地址
         } else {
             code[cx1].a = cx;
         }

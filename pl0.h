@@ -3,7 +3,7 @@
 #define NRW        12     // number of reserved words
 #define TXMAX      500    // length of identifier table
 #define MAXNUMLEN  14     // maximum number of digits in numbers
-#define NSYM       10     // maximum number of symbols in array ssym and csym
+#define NSYM       11     // maximum number of symbols in array ssym and csym
 #define MAXIDLEN   10     // length of identifiers
 
 #define MAXADDRESS 32767  // maximum address
@@ -52,7 +52,8 @@ enum symtype
     SYM_FOR,            // 31
     SYM_STEP,           // 32
     SYM_UNTIL,          // 33
-    SYM_RETURN          // 34
+    SYM_RETURN,         // 34
+    SYM_EXClAIMAION     // 35
     /***新增部分***/
 };
 
@@ -93,7 +94,8 @@ char* symtypeDescription[] = {
         "SYM_FOR",            // 31
         "SYM_STEP",           // 32
         "SYM_UNTIL",          // 33
-        "SYM_RETURN"          // 34
+        "SYM_RETURN",         // 34
+        "SYM_EXClAIMAION"     // 35
         /***新增部分***/
 };
 
@@ -194,12 +196,12 @@ int wsym[NRW + 1] =
 int ssym[NSYM + 1] =
 {
 	SYM_NULL, SYM_PLUS, SYM_MINUS, SYM_TIMES, SYM_SLASH,
-	SYM_LPAREN, SYM_RPAREN, SYM_EQU, SYM_COMMA, SYM_PERIOD, SYM_SEMICOLON
+	SYM_LPAREN, SYM_RPAREN, SYM_EQU, SYM_COMMA, SYM_PERIOD, SYM_SEMICOLON, SYM_EXClAIMAION
 };
 
 char csym[NSYM + 1] =
 {
-	' ', '+', '-', '*', '/', '(', ')', '=', ',', '.', ';'
+	' ', '+', '-', '*', '/', '(', ')', '=', ',', '.', ';', '!'
 };
 
 #define MAXINS   8
