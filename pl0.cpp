@@ -1,9 +1,8 @@
 // pl0 compiler source code
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
 #include "pl0.h"
 #include "set.cpp"
@@ -23,7 +22,7 @@ void error(int n)
 } // error
 
 //////////////////////////////////////////////////////////////////////
-void getch(void)
+void getch()
 {
 	if (cc == ll)
 	{
@@ -47,7 +46,7 @@ void getch(void)
 
 //////////////////////////////////////////////////////////////////////
 // gets a symbol from input stream.
-void getsym(void)
+void getsym()
 {
 	int i, k;
 	char a[MAXIDLEN + 1];
@@ -69,7 +68,7 @@ void getsym(void)
 		strcpy(id, a);
 		word[0] = id;
 		i = NRW;
-		while (strcmp(id, word[i--]));
+		while (strcmp(id, word[i--]) != 0);
 		if (++i)
 			sym = wsym[i]; // symbol is a reserved word
 		else
@@ -255,7 +254,7 @@ void constdeclaration()
 } // constdeclaration
 
 //////////////////////////////////////////////////////////////////////
-void vardeclaration(void)
+void vardeclaration()
 {
 	if (sym == SYM_IDENTIFIER)
 	{
@@ -407,7 +406,6 @@ void expression(symset fsys)
 			gen(OPR, 0, OPR_MIN);
 		}
 	} // while
-    printSet(fsys, symtypeDescription);
     destroySet(set);
 } // expression
 
@@ -467,7 +465,7 @@ void statement(symset fsys)
 {
 	int i, cx1, cx2;
 	symset set1, set;
-
+    printSet(fsys, symtypeDescription);
 	if (sym == SYM_IDENTIFIER)
 	{ // variable assignment
 		mask* mk;
@@ -548,9 +546,10 @@ void statement(symset fsys)
         if (sym == SYM_ELSE) {
             cx2 = cx;
             gen(JMP, 0,0);
-
-            getsym();
             code[cx1].a = cx;
+            getsym(); // statement后，cx为then
+
+
             statement(fsys);
             code[cx2].a = cx;
         } else {
@@ -749,7 +748,7 @@ void block(symset fsys)
 } // block
 
 //////////////////////////////////////////////////////////////////////
-int base(int stack[], int currentLevel, int levelDiff)
+int base(const int stack[], int currentLevel, int levelDiff)
 {
 	int b = currentLevel;
 	
@@ -896,7 +895,7 @@ int main ()
 	
 	// create begin symbol sets
 	declbegsys = createSet(SYM_CONST, SYM_VAR, SYM_PROCEDURE, SYM_NULL);
-	statbegsys = createSet(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_WHILE, SYM_NULL);
+	statbegsys = createSet(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_ELSE, SYM_WHILE, SYM_NULL);
 	facbegsys = createSet(SYM_IDENTIFIER, SYM_NUMBER, SYM_LPAREN, SYM_NULL);
 
 	err = cc = cx = ll = 0; // initialize global variables

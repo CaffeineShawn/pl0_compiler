@@ -107,7 +107,7 @@ int checkIfInSet(int elem, symset s)
 
 void printSet(symset s, char *symtypeDesc[]) {
     while (s->next) {
-        printf("%s -> ", symtypeDesc[s->elem]);
+        printf("%s->", symtypeDesc[s->elem]);
         s=s->next;
     }
     printf("END \r\n");
