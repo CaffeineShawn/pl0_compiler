@@ -51,13 +51,18 @@ void getsym()
 	int i, k;
 	char a[MAXIDLEN + 1];
 
-	while (ch == ' ')
+	while (ch == ' ' || ch == '\t')
 		getch();
 
-    if (ch == '{') {
-        do {
-            getch();
-        } while (ch != '}');
+    if (ch == '/') {
+        getch();
+        if (ch != '/') {
+            error(26);
+        } else {
+            do {
+                getch();
+            } while (ch != ' ');
+        }
         getch();
     }
 

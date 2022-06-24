@@ -53,7 +53,7 @@ enum symtype
     SYM_STEP,           // 32
     SYM_UNTIL,          // 33
     SYM_RETURN,         // 34
-    SYM_EXClAIMAION     // 35
+    SYM_EXCLAMATION     // 35
     /***新增部分***/
 };
 
@@ -96,7 +96,7 @@ char* symtypeDescription[] = {
         "SYM_UNTIL",          // 33
         "SYM_DO",             // 34
         "SYM_RETURN",         // 35
-        "SYM_EXClAIMAION"     // 36
+        "SYM_EXCLAMATION"     // 36
         /***新增部分***/
 };
 
@@ -155,7 +155,7 @@ char* err_msg[] =
 /* 23 */    "The symbol can not be followed by a factor.",
 /* 24 */    "The symbol can not be as the beginning of an expression.",
 /* 25 */    "The number is too great.",
-/* 26 */    "",
+/* 26 */    "A single / comment is not allowed.",
 /* 27 */    "",
 /* 28 */    "",
 /* 29 */    "",
@@ -197,7 +197,7 @@ int wsym[NRW + 1] =
 int ssym[NSYM + 1] =
 {
 	SYM_NULL, SYM_PLUS, SYM_MINUS, SYM_TIMES, SYM_SLASH,
-	SYM_LPAREN, SYM_RPAREN, SYM_EQU, SYM_COMMA, SYM_PERIOD, SYM_SEMICOLON, SYM_EXClAIMAION
+	SYM_LPAREN, SYM_RPAREN, SYM_EQU, SYM_COMMA, SYM_PERIOD, SYM_SEMICOLON, SYM_EXCLAMATION
 };
 
 char csym[NSYM + 1] =
