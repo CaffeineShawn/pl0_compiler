@@ -54,18 +54,6 @@ void getsym()
 	while (ch == ' ' || ch == '\t')
 		getch();
 
-    if (ch == '/') {
-        getch();
-        if (ch != '/') {
-            error(26);
-        } else {
-            do {
-                getch();
-            } while (ch != ' ');
-        }
-        getch();
-    }
-
 	if (isalpha(ch))
 	{ // symbol is a reserved word or an identifier.
 		k = 0;
@@ -146,9 +134,29 @@ void getsym()
         } else {
             sym = SYM_NULL; // illegal
         }
-    }
-	else
-	{ // other tokens
+    } else if (ch == '/') {
+        getch();
+        if (ch == '*') {
+            getch();
+            char prev = ch;
+            while (prev != '*' || ch != '/') {
+                prev = ch;
+                getch();
+            }
+            if (prev != '*' && ch != '/') {
+                error(19);
+            } else {
+                getch();
+                getsym();
+            }
+        } else if (ch == '/') {
+            while (cc != ll) {
+                getch();
+            }
+            getsym();
+        }
+
+    } else { // other tokens
 		i = NSYM;
 		csym[0] = ch;
 		while (csym[i--] != ch);
