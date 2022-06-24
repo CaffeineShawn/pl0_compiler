@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define NRW        12     // number of reserved words
+#define NRW        17     // number of reserved words
 #define TXMAX      500    // length of identifier table
 #define MAXNUMLEN  14     // maximum number of digits in numbers
 #define NSYM       11     // maximum number of symbols in array ssym and csym
@@ -94,8 +94,9 @@ char* symtypeDescription[] = {
         "SYM_FOR",            // 31
         "SYM_STEP",           // 32
         "SYM_UNTIL",          // 33
-        "SYM_RETURN",         // 34
-        "SYM_EXClAIMAION"     // 35
+        "SYM_DO",             // 34
+        "SYM_RETURN",         // 35
+        "SYM_EXClAIMAION"     // 36
         /***新增部分***/
 };
 
@@ -184,13 +185,13 @@ char* word[NRW + 1] =
 {
 	"", /* place holder */
 	"begin", "call", "const", "do", "end","if",
-	"odd", "procedure", "then", "var", "while", "else"
+	"odd", "procedure", "then", "var", "while", "else", "for", "step", "until", "do", "return"
 };
 
 int wsym[NRW + 1] =
 {
 	SYM_NULL, SYM_BEGIN, SYM_CALL, SYM_CONST, SYM_DO, SYM_END,
-	SYM_IF, SYM_ODD, SYM_PROCEDURE, SYM_THEN, SYM_VAR, SYM_WHILE, SYM_ELSE
+	SYM_IF, SYM_ODD, SYM_PROCEDURE, SYM_THEN, SYM_VAR, SYM_WHILE, SYM_ELSE, SYM_FOR, SYM_STEP, SYM_UNTIL, SYM_DO, SYM_RETURN
 };
 
 int ssym[NSYM + 1] =

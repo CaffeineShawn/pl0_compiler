@@ -618,6 +618,25 @@ void statement(symset fsys)
 		gen(JMP, 0, cx1);
 		code[cx2].a = cx;
 	}
+    else if (sym == SYM_FOR) {
+        getsym();
+        printf("保留字: SYM_FOR - for\n");
+    } else if (sym == SYM_STEP) {
+        getsym();
+        printf("保留字: SYM_STEP - step\n");
+    } else if (sym == SYM_STEP) {
+        getsym();
+        printf("保留字: SYM_STEP - step\n");
+    } else if (sym == SYM_UNTIL) {
+        getsym();
+        printf("保留字: SYM_UNTIL - until\n");
+    } else if (sym == SYM_DO) {
+        getsym();
+        printf("保留字: SYM_DO - do\n");
+    } else if (sym == SYM_RETURN) {
+        getsym();
+        printf("保留字: SYM_RETURN - return\n");
+    }
 	test(fsys, phi, 19);
 } // statement
 			
@@ -905,7 +924,7 @@ int main ()
 	
 	// create begin symbol sets
 	declbegsys = createSet(SYM_CONST, SYM_VAR, SYM_PROCEDURE, SYM_NULL);
-	statbegsys = createSet(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_ELSE, SYM_WHILE, SYM_NULL);
+	statbegsys = createSet(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_ELSE, SYM_WHILE, SYM_FOR, SYM_STEP, SYM_UNTIL, SYM_DO, SYM_RETURN, SYM_NULL);
 	facbegsys = createSet(SYM_IDENTIFIER, SYM_NUMBER, SYM_LPAREN, SYM_NULL);
 
 	err = cc = cx = ll = 0; // initialize global variables

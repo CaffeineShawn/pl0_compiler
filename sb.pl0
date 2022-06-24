@@ -5,4 +5,9 @@ begin
     a:=3
   else
     a:=4;
+  do;
+  for;
+  until;
+  return;
+  step;
 end.
