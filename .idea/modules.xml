@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PL0源程序（C语言）.iml" filepath="$PROJECT_DIR$/.idea/PL0源程序（C语言）.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pl0_compiler.iml" filepath="$PROJECT_DIR$/.idea/pl0_compiler.iml" />
     </modules>
   </component>
 </project>

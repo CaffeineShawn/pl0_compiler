@@ -5,8 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "PL0.h"
-#include "set.c"
+#include "pl0.h"
+#include "set.cpp"
 
 //////////////////////////////////////////////////////////////////////
 // print error message.
@@ -34,8 +34,7 @@ void getch(void)
 		}
 		ll = cc = 0;
 		printf("%5d  ", cx);
-		while ( (!feof(infile)) // added & modified by alex 01-02-09
-			    && ((ch = getc(infile)) != '\n'))
+		while ( (!feof(infile)) && ((ch = getc(infile)) != '\n'))
 		{
 			printf("%c", ch);
 			line[++ll] = ch;
@@ -172,13 +171,13 @@ void test(symset s1, symset s2, int n)
 {
 	symset s;
 
-	if (! inset(sym, s1))
+	if (!checkIfInSet(sym, s1))
 	{
 		error(n);
-		s = uniteset(s1, s2);
-		while(! inset(sym, s))
+		s = appendSet(s1, s2);
+		while(!checkIfInSet(sym, s))
 			getsym();
-		destroyset(s);
+        destroySet(s);
 	}
 } // test
 
@@ -291,7 +290,7 @@ void factor(symset fsys)
 	
 	test(facbegsys, fsys, 24); // The symbol can not be as the beginning of an expression.
 
-	while (inset(sym, facbegsys))
+	while (checkIfInSet(sym, facbegsys))
 	{
 		if (sym == SYM_IDENTIFIER)
 		{
@@ -331,9 +330,9 @@ void factor(symset fsys)
 		else if (sym == SYM_LPAREN)
 		{
 			getsym();
-			set = uniteset(createset(SYM_RPAREN, SYM_NULL), fsys);
+			set = appendSet(createSet(SYM_RPAREN, SYM_NULL), fsys);
 			expression(set);
-			destroyset(set);
+            destroySet(set);
 			if (sym == SYM_RPAREN)
 			{
 				getsym();
@@ -343,7 +342,7 @@ void factor(symset fsys)
 				error(22); // Missing ')'.
 			}
 		}
-		test(fsys, createset(SYM_LPAREN, SYM_NULL), 23);
+		test(fsys, createSet(SYM_LPAREN, SYM_NULL), 23);
 	} // while
 } // factor
 
@@ -353,7 +352,7 @@ void term(symset fsys)
 	int mulop;
 	symset set;
 	
-	set = uniteset(fsys, createset(SYM_TIMES, SYM_SLASH, SYM_NULL));
+	set = appendSet(fsys, createSet(SYM_TIMES, SYM_SLASH, SYM_NULL));
 	factor(set);
 	while (sym == SYM_TIMES || sym == SYM_SLASH)
 	{
@@ -369,7 +368,7 @@ void term(symset fsys)
 			gen(OPR, 0, OPR_DIV);
 		}
 	} // while
-	destroyset(set);
+    destroySet(set);
 } // term
 
 //////////////////////////////////////////////////////////////////////
@@ -378,7 +377,7 @@ void expression(symset fsys)
 	int addop;
 	symset set;
 
-	set = uniteset(fsys, createset(SYM_PLUS, SYM_MINUS, SYM_NULL));
+	set = appendSet(fsys, createSet(SYM_PLUS, SYM_MINUS, SYM_NULL));
 	if (sym == SYM_PLUS || sym == SYM_MINUS)
 	{
 		addop = sym;
@@ -408,8 +407,8 @@ void expression(symset fsys)
 			gen(OPR, 0, OPR_MIN);
 		}
 	} // while
-
-	destroyset(set);
+    printSet(fsys, symtypeDescription);
+    destroySet(set);
 } // expression
 
 //////////////////////////////////////////////////////////////////////
@@ -426,10 +425,10 @@ void condition(symset fsys)
 	}
 	else
 	{
-		set = uniteset(relset, fsys);
+		set = appendSet(relset, fsys);
 		expression(set);
-		destroyset(set);
-		if (! inset(sym, relset))
+        destroySet(set);
+		if (!checkIfInSet(sym, relset))
 		{
 			error(20);
 		}
@@ -526,11 +525,11 @@ void statement(symset fsys)
 	else if (sym == SYM_IF)
 	{ // if statement
 		getsym();
-		set1 = createset(SYM_THEN, SYM_DO, SYM_NULL);
-		set = uniteset(set1, fsys);
+		set1 = createSet(SYM_THEN, SYM_DO, SYM_ELSE, SYM_NULL);
+		set = appendSet(set1, fsys);
 		condition(set);
-		destroyset(set1);
-		destroyset(set);
+        destroySet(set1);
+        destroySet(set);
 		if (sym == SYM_THEN)
 		{
 			getsym();
@@ -542,15 +541,29 @@ void statement(symset fsys)
 		cx1 = cx;
 		gen(JPC, 0, 0);
 		statement(fsys);
-		code[cx1].a = cx;	
+
+        /**
+         * 跳转到else
+         */
+        if (sym == SYM_ELSE) {
+            cx2 = cx;
+            gen(JMP, 0,0);
+
+            getsym();
+            code[cx1].a = cx;
+            statement(fsys);
+            code[cx2].a = cx;
+        } else {
+            code[cx1].a = cx;
+        }
 	}
 	else if (sym == SYM_BEGIN)
 	{ // block
 		getsym();
-		set1 = createset(SYM_SEMICOLON, SYM_END, SYM_NULL);
-		set = uniteset(set1, fsys);
+		set1 = createSet(SYM_SEMICOLON, SYM_END, SYM_NULL);
+		set = appendSet(set1, fsys);
 		statement(set);
-		while (sym == SYM_SEMICOLON || inset(sym, statbegsys))
+		while (sym == SYM_SEMICOLON || checkIfInSet(sym, statbegsys))
 		{
 			if (sym == SYM_SEMICOLON)
 			{
@@ -562,8 +575,8 @@ void statement(symset fsys)
 			}
 			statement(set);
 		} // while
-		destroyset(set1);
-		destroyset(set);
+        destroySet(set1);
+        destroySet(set);
 		if (sym == SYM_END)
 		{
 			getsym();
@@ -577,11 +590,11 @@ void statement(symset fsys)
 	{ // while statement
 		cx1 = cx;
 		getsym();
-		set1 = createset(SYM_DO, SYM_NULL);
-		set = uniteset(set1, fsys);
+		set1 = createSet(SYM_DO, SYM_NULL);
+		set = appendSet(set1, fsys);
 		condition(set);
-		destroyset(set1);
-		destroyset(set);
+        destroySet(set1);
+        destroySet(set);
 		cx2 = cx;
 		gen(JPC, 0, 0);
 		if (sym == SYM_DO)
@@ -691,45 +704,45 @@ void block(symset fsys)
 
 			level++;
 			savedTx = tx;
-			set1 = createset(SYM_SEMICOLON, SYM_NULL);
-			set = uniteset(set1, fsys);
+			set1 = createSet(SYM_SEMICOLON, SYM_NULL);
+			set = appendSet(set1, fsys);
 			block(set);
-			destroyset(set1);
-			destroyset(set);
+            destroySet(set1);
+            destroySet(set);
 			tx = savedTx;
 			level--;
 
 			if (sym == SYM_SEMICOLON)
 			{
 				getsym();
-				set1 = createset(SYM_IDENTIFIER, SYM_PROCEDURE, SYM_NULL);
-				set = uniteset(statbegsys, set1);
+				set1 = createSet(SYM_IDENTIFIER, SYM_PROCEDURE, SYM_NULL);
+				set = appendSet(statbegsys, set1);
 				test(set, fsys, 6);
-				destroyset(set1);
-				destroyset(set);
+                destroySet(set1);
+                destroySet(set);
 			}
 			else
 			{
 				error(5); // Missing ',' or ';'.
 			}
 		} // while
-		set1 = createset(SYM_IDENTIFIER, SYM_NULL);
-		set = uniteset(statbegsys, set1);
+		set1 = createSet(SYM_IDENTIFIER, SYM_NULL);
+		set = appendSet(statbegsys, set1);
 		test(set, declbegsys, 7);
-		destroyset(set1);
-		destroyset(set);
+        destroySet(set1);
+        destroySet(set);
 	}
-	while (inset(sym, declbegsys));
+	while (checkIfInSet(sym, declbegsys));
 
 	code[mk->address].a = cx;
 	mk->address = cx;
 	cx0 = cx;
 	gen(INT, 0, block_dx);
-	set1 = createset(SYM_SEMICOLON, SYM_END, SYM_NULL);
-	set = uniteset(set1, fsys);
+	set1 = createSet(SYM_SEMICOLON, SYM_END, SYM_NULL);
+	set = appendSet(set1, fsys);
 	statement(set);
-	destroyset(set1);
-	destroyset(set);
+    destroySet(set1);
+    destroySet(set);
 	gen(OPR, 0, OPR_RET); // return
 	test(fsys, phi, 8); // test for error: Follow the statement is an incorrect symbol.
 	listcode(cx0, cx);
@@ -866,25 +879,25 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80];
+	char s[80] = "sb.pl0";
 	int i;
 	symset set, set1, set2;
 
-	printf("Please input source file name: "); // get file name to be compiled
-	scanf("%s", s);
+//	printf("Please input source file name: "); // get file name to be compiled
+//	scanf("%s", s);
 	if ((infile = fopen(s, "r")) == NULL)
 	{
 		printf("File %s can't be opened.\n", s);
 		exit(1);
 	}
 
-	phi = createset(SYM_NULL);
-	relset = createset(SYM_EQU, SYM_NEQ, SYM_LES, SYM_LEQ, SYM_GTR, SYM_GEQ, SYM_NULL);
+	phi = createSet(SYM_NULL);
+	relset = createSet(SYM_EQU, SYM_NEQ, SYM_LES, SYM_LEQ, SYM_GTR, SYM_GEQ, SYM_NULL);
 	
 	// create begin symbol sets
-	declbegsys = createset(SYM_CONST, SYM_VAR, SYM_PROCEDURE, SYM_NULL);
-	statbegsys = createset(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_WHILE, SYM_NULL);
-	facbegsys = createset(SYM_IDENTIFIER, SYM_NUMBER, SYM_LPAREN, SYM_NULL);
+	declbegsys = createSet(SYM_CONST, SYM_VAR, SYM_PROCEDURE, SYM_NULL);
+	statbegsys = createSet(SYM_BEGIN, SYM_CALL, SYM_IF, SYM_WHILE, SYM_NULL);
+	facbegsys = createSet(SYM_IDENTIFIER, SYM_NUMBER, SYM_LPAREN, SYM_NULL);
 
 	err = cc = cx = ll = 0; // initialize global variables
 	ch = ' ';
@@ -892,18 +905,18 @@ int main ()
 
 	getsym();
 
-	set1 = createset(SYM_PERIOD, SYM_NULL);
-	set2 = uniteset(declbegsys, statbegsys);
-	set = uniteset(set1, set2);
+	set1 = createSet(SYM_PERIOD, SYM_NULL);
+	set2 = appendSet(declbegsys, statbegsys);
+	set = appendSet(set1, set2);
 	block(set);
-	destroyset(set1);
-	destroyset(set2);
-	destroyset(set);
-	destroyset(phi);
-	destroyset(relset);
-	destroyset(declbegsys);
-	destroyset(statbegsys);
-	destroyset(facbegsys);
+    destroySet(set1);
+    destroySet(set2);
+    destroySet(set);
+    destroySet(phi);
+    destroySet(relset);
+    destroySet(declbegsys);
+    destroySet(statbegsys);
+    destroySet(facbegsys);
 
 	if (sym != SYM_PERIOD)
 		error(9); // '.' expected.

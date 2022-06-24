@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include "set.h"
 
-symset uniteset(symset s1, symset s2)
+symset appendSet(symset s1, symset s2)
 {
 	symset s;
 	snode* p;
@@ -45,9 +45,9 @@ symset uniteset(symset s1, symset s2)
 	p->next = NULL;
 
 	return s;
-} // uniteset
+} // appendSet
 
-void setinsert(symset s, int elem)
+void insertIntoSet(symset s, int elem)
 {
 	snode* p = s;
 	snode* q;
@@ -61,9 +61,9 @@ void setinsert(symset s, int elem)
 	q->elem = elem;
 	q->next = p->next;
 	p->next = q;
-} // setinsert
+} // insertIntoSet
 
-symset createset(int elem, .../* SYM_NULL */)
+symset createSet(int elem, .../* SYM_NULL */)
 {
 	va_list list;
 	symset s;
@@ -74,14 +74,14 @@ symset createset(int elem, .../* SYM_NULL */)
 	va_start(list, elem);
 	while (elem)
 	{
-		setinsert(s, elem);
+        insertIntoSet(s, elem);
 		elem = va_arg(list, int);
 	}
 	va_end(list);
 	return s;
-} // createset
+} // createSet
 
-void destroyset(symset s)
+void destroySet(symset s)
 {
 	snode* p;
 
@@ -91,9 +91,9 @@ void destroyset(symset s)
 		s = s->next;
 		free(p);
 	}
-} // destroyset
+} // destroySet
 
-int inset(int elem, symset s)
+int checkIfInSet(int elem, symset s)
 {
 	s = s->next;
 	while (s && s->elem < elem)
@@ -103,6 +103,14 @@ int inset(int elem, symset s)
 		return 1;
 	else
 		return 0;
-} // inset
+} // checkIfInSet
+
+void printSet(symset s, char *symtypeDesc[]) {
+    while (s->next) {
+        printf("%s -> ", symtypeDesc[s->elem]);
+        s=s->next;
+    }
+    printf("END \r\n");
+}
 
 // EOF set.c

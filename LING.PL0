@@ -13,4 +13,4 @@ if c<>3
   begin  c:=a-b;
   write(c);
   end
-end. 
+end.

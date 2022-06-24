@@ -9,10 +9,11 @@ typedef struct snode
 
 symset phi, declbegsys, statbegsys, facbegsys, relset;
 
-symset createset(int data, .../* SYM_NULL */);
-void destroyset(symset s);
-symset uniteset(symset s1, symset s2);
-int inset(int elem, symset s);
+symset createSet(int elem, .../* SYM_NULL */);
+void destroySet(symset s);
+symset appendSet(symset s1, symset s2);
+int checkIfInSet(int elem, symset s);
+void printSet(symset s, char *symtypeDesc[]);
 
 #endif
 // EOF set.h
