@@ -134,9 +134,36 @@ void getsym()
         } else {
             sym = SYM_NULL; // illegal
         }
+    } else if (ch == '+') {
+        getch();
+        if (ch == '=') {
+            sym = SYM_PLUSBY;
+            getch();
+        } else {
+            sym = SYM_PLUS;
+        }
+    } else if (ch == '-') {
+        getch();
+        if (ch == '=') {
+            sym = SYM_MINUSBY;
+            getch();
+        } else {
+            sym = SYM_MINUS;
+        }
+    } else if (ch == '*') {
+        getch();
+        if (ch == '=') {
+            sym = SYM_MULTIPLYBY;
+            getch();
+        } else {
+            sym = SYM_TIMES;
+        }
     } else if (ch == '/') {
         getch();
-        if (ch == '*') {
+        if (ch == '=') {
+            sym = SYM_DIVIDEBY;
+            getch();
+        } else if (ch == '*') {
             getch();
             char prev = ch;
             while (prev != '*' || ch != '/') {
@@ -154,6 +181,8 @@ void getsym()
                 getch();
             }
             getsym();
+        } else {
+            sym = SYM_SLASH;
         }
 
     } else { // other tokens
@@ -649,6 +678,18 @@ void statement(symset fsys)
     } else if (sym == SYM_RETURN) {
         getsym();
         printf("保留字: SYM_RETURN - return\n");
+    } else if (sym == SYM_PLUSBY) {
+        getsym();
+        printf("保留字: SYM_PLUSBY - plusBy\n");
+    } else if (sym == SYM_MINUSBY) {
+        getsym();
+        printf("保留字: SYM_MINUSBY - minusBy\n");
+    } else if (sym == SYM_MULTIPLYBY) {
+        getsym();
+        printf("保留字: SYM_MULTIPLYBY - multiplyBy\n");
+    } else if (sym == SYM_DIVIDEBY) {
+        getsym();
+        printf("保留字: SYM_DIVIDEBY - divideBy\n");
     }
 	test(fsys, phi, 19);
 } // statement
