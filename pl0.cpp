@@ -569,6 +569,24 @@ void statement(symset fsys)
                 gen(OPR, 0, OPR_DIV);
                 gen(STO, level - mk->level, mk->address);
             }
+        } else if (sym == SYM_PLUSBY) {
+            getsym();
+            mk = (mask*) &table[i];
+            gen(LOD, level - mk-> level, mk->address);
+            expression(fsys);
+            if (i) {
+                gen(OPR, 0, OPR_ADD);
+                gen(STO, level - mk->level, mk->address);
+            }
+        } else if (sym == SYM_MINUSBY) {
+            getsym();
+            mk = (mask*) &table[i];
+            gen(LOD, level - mk-> level, mk->address);
+            expression(fsys);
+            if (i) {
+                gen(OPR, 0, OPR_MIN);
+                gen(STO, level - mk->level, mk->address);
+            }
         }
         else
         {
