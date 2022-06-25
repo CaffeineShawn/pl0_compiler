@@ -185,6 +185,15 @@ void getsym()
             sym = SYM_SLASH;
         }
 
+    } else if (ch == '|') {
+        getch();
+        if (ch == '|') {
+            sym = SYM_OR;
+            getch();
+        }
+    } else if (ch == '&') {
+        getch();
+        sym = SYM_AND;
     } else { // other tokens
 		i = NSYM;
 		csym[0] = ch;
@@ -355,6 +364,7 @@ void factor(symset fsys)
 				{
 					mask* mk;
 				case ID_CONSTANT:
+					gen(LIT, 0, table[i].value);
 					gen(LIT, 0, table[i].value);
 					break;
 				case ID_VARIABLE:
@@ -531,20 +541,40 @@ void statement(symset fsys)
 			i = 0;
 		}
 		getsym();
-		if (sym == SYM_BECOMES)
+        /*新增部分开始*/
+        if (sym == SYM_BECOMES)
 		{
 			getsym();
+            expression(fsys);
+            mk = (mask*) &table[i];
+            if (i) {
+                gen(STO, level - mk->level, mk->address);
+            }
 		}
-		else
-		{
+		else if (sym == SYM_MULTIPLYBY) {
+            getsym();
+            mk = (mask*) &table[i];
+            gen(LOD, level - mk-> level, mk->address);
+            expression(fsys);
+            if (i) {
+                gen(OPR, 0, OPR_MUL);
+                gen(STO, level - mk->level, mk->address);
+            }
+        } else if (sym == SYM_DIVIDEBY) {
+            getsym();
+            mk = (mask*) &table[i];
+            gen(LOD, level - mk-> level, mk->address);
+            expression(fsys);
+            if (i) {
+                gen(OPR, 0, OPR_DIV);
+                gen(STO, level - mk->level, mk->address);
+            }
+        }
+        else
+        {
 			error(13); // ':=' expected.
 		}
-		expression(fsys);
-		mk = (mask*) &table[i];
-		if (i)
-		{
-			gen(STO, level - mk->level, mk->address);
-		}
+
 	}
 	else if (sym == SYM_CALL)
 	{ // procedure call
@@ -690,8 +720,14 @@ void statement(symset fsys)
     } else if (sym == SYM_DIVIDEBY) {
         getsym();
         printf("保留字: SYM_DIVIDEBY - divideBy\n");
+    } else if (sym == SYM_AND) {
+        getsym();
+        printf("保留字: SYM_AND - and\n");
+    } else if (sym == SYM_OR) {
+        getsym();
+        printf("保留字: SYM_OR - or\n");
     }
-	test(fsys, phi, 19);
+    test(fsys, phi, 19);
 } // statement
 			
 //////////////////////////////////////////////////////////////////////

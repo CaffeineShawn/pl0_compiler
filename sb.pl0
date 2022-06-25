@@ -1,17 +1,10 @@
 var a,b;
 begin
-  b:=1;
+  b:=5;
   if b!=2 then
     a:=3
   else
     a:=4;
-  do;
-  for;
-  until;
-  return;
-  step;
-  /*我爱国无罪
-    我爱国无罪
-  */
-  *=;
+  b*=5;
+  b/=5;
 end.
