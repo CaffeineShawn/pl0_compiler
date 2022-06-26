@@ -167,8 +167,8 @@ char* err_msg[] =
 /* 24 */    "The symbol can not be as the beginning of an expression.",
 /* 25 */    "The number is too great.",
 /* 26 */    "A single / comment is not allowed.",
-/* 27 */    "",
-/* 28 */    "",
+/* 27 */    "Step length is ambiguous.",
+/* 28 */    "Until condition is ambiguous.",
 /* 29 */    "",
 /* 30 */    "",
 /* 31 */    "",
@@ -215,6 +215,9 @@ char csym[NSYM + 1] =
 {
 	' ', '+', '-', '*', '/', '(', ')', '=', ',', '.', ';', '!', '&', '|'
 };
+
+//////////////////////////////////////////////////////////////////////
+int dx;  // data allocation index
 
 #define MAXINS   8
 char* mnemonic[MAXINS] =

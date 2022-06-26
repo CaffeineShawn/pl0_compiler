@@ -241,9 +241,6 @@ void test(symset s1, symset s2, int n)
 	}
 } // test
 
-//////////////////////////////////////////////////////////////////////
-int dx;  // data allocation index
-
 // enter object(constant, variable or procedre) into table.
 void enter(int kind)
 {
@@ -525,7 +522,7 @@ void condition(symset fsys)
 //////////////////////////////////////////////////////////////////////
 void statement(symset fsys)
 {
-	int i, cx1, cx2;
+	int i, cx1, cx2, cx3;
 	symset set1, set;
 //    printSet(fsys, symtypeDescription);
 	if (sym == SYM_IDENTIFIER)
@@ -550,8 +547,7 @@ void statement(symset fsys)
             if (i) {
                 gen(STO, level - mk->level, mk->address);
             }
-		}
-		else if (sym == SYM_MULTIPLYBY) {
+		} else if (sym == SYM_MULTIPLYBY) {
             getsym();
             mk = (mask*) &table[i];
             gen(LOD, level - mk-> level, mk->address);
@@ -587,9 +583,7 @@ void statement(symset fsys)
                 gen(OPR, 0, OPR_MIN);
                 gen(STO, level - mk->level, mk->address);
             }
-        }
-        else
-        {
+        } else {
 			error(13); // ':=' expected.
 		}
 
@@ -710,7 +704,86 @@ void statement(symset fsys)
 	}
     else if (sym == SYM_FOR) {
         getsym();
-        printf("保留字: SYM_FOR - for\n");
+
+        if (sym != SYM_IDENTIFIER) {
+            error(13);
+        }
+        i = position(id);
+
+        if (i == 0) {
+            error(11);
+        } else if (table[i].kind != ID_VARIABLE) {
+            error(12);
+            i = 0;
+        }
+
+        getsym();
+        if (sym == SYM_BECOMES) {
+            getsym();
+        } else {
+            error(13);
+        }
+
+        set1 = createSet(SYM_STEP, SYM_NULL);
+        set = appendSet(set1, fsys);
+        expression(set);
+        destroySet(set1);
+        destroySet(set);
+
+        mask *mk = (mask *)&table[i];
+
+        if (i != 0) {
+            gen(STO, level - mk->level, mk->address);
+        }
+
+        if (sym == SYM_STEP) {
+            getsym();
+        } else {
+            error(27);
+        }
+
+        cx1 = cx;
+        gen(JMP, 0, 0);
+        cx3 = cx;
+
+        set1 = createSet(SYM_UNTIL, SYM_NULL);
+        set = appendSet(set1, fsys);
+        expression(set);
+        destroySet(set1);
+        destroySet(set);
+
+        gen(LOD, level - mk->level, mk->address);
+        gen(OPR, 0, OPR_ADD);
+        gen(STO, level - mk->level, mk->address);
+
+        if (sym == SYM_UNTIL) {
+            getsym();
+        } else {
+            error(28);
+        }
+
+        code[cx1].a = cx;
+
+        set1 = createSet(SYM_DO, SYM_NULL);
+        set = appendSet(set1, fsys);
+        expression(set);
+        destroySet(set1);
+        destroySet(set);
+
+        gen(LOD, level - mk->level, mk->address);
+        gen(OPR, 0, OPR_GEQ);
+        cx2 = cx;
+        gen(JPC, 0, 0);
+        if (sym == SYM_DO) {
+            getsym();
+        } else {
+            error(18);
+        }
+
+        statement(fsys);
+        gen(JMP, 0, cx3);
+        code[cx2].a = cx;
+
     } else if (sym == SYM_STEP) {
         getsym();
         printf("保留字: SYM_STEP - step\n");
@@ -968,6 +1041,7 @@ void interpret()
 			case OPR_GEQ:
 				top--;
 				stack[top] = stack[top] >= stack[top + 1];
+                break;
 			case OPR_GTR:
 				top--;
 				stack[top] = stack[top] > stack[top + 1];
@@ -975,6 +1049,7 @@ void interpret()
 			case OPR_LEQ:
 				top--;
 				stack[top] = stack[top] <= stack[top + 1];
+                break;
 			} // switch
 			break;
 		case LOD:
@@ -982,7 +1057,7 @@ void interpret()
 			break;
 		case STO:
 			stack[base(stack, b, i.l) + i.a] = stack[top];
-			printf("%d\n", stack[top]);
+			printf("PC: %d, target: %d, top: %d, STO: %d\n", pc, base(stack, b, i.l) + i.a, top, stack[top]);
 			top--;
 			break;
 		case CAL:
