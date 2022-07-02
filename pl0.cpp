@@ -55,7 +55,7 @@ void getsym()
 
 	while (ch == ' ' || ch == '\t')
 		getch();
-
+	
 	if (isalpha(ch))
 	{ // symbol is a reserved word or an identifier.
 		k = 0;
@@ -182,9 +182,11 @@ void getsym()
             }
         } else if (ch == '/') {
             getch();
-            cc = ll;
-            getsym();
+			while (cc != ll) {
+				getch();
+			}
 			printf("保留字: SYM_NOTE - //\n");
+            getsym();
         } else {
             sym = SYM_SLASH;
         }
@@ -1090,7 +1092,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/reservedwords.pl0";
+	char s[80] = "test/for.pl0";
 	int i;
 	symset set, set1, set2;
     time_t t;
