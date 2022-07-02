@@ -787,9 +787,6 @@ void statement(symset fsys)
     } else if (sym == SYM_STEP) {
         getsym();
         printf("保留字: SYM_STEP - step\n");
-    } else if (sym == SYM_STEP) {
-        getsym();
-        printf("保留字: SYM_STEP - step\n");
     } else if (sym == SYM_UNTIL) {
         getsym();
         printf("保留字: SYM_UNTIL - until\n");
@@ -1034,6 +1031,7 @@ void interpret()
 			case OPR_NEQ:
 				top--;
 				stack[top] = stack[top] != stack[top + 1];
+                break;
 			case OPR_LES:
 				top--;
 				stack[top] = stack[top] < stack[top + 1];
@@ -1090,7 +1088,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "sb.pl0";
+	char s[80] = "test/neq.pl0";
 	int i;
 	symset set, set1, set2;
 
@@ -1142,7 +1140,7 @@ int main ()
 		interpret();
 	else
 		printf("There are %d error(s) in PL/0 program.\n", err);
-	listcode(0, cx);
+//	listcode(0, cx);
 } // main
 
 //////////////////////////////////////////////////////////////////////
