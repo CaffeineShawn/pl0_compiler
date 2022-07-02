@@ -63,7 +63,7 @@ enum symtype
     /***新增部分***/
 };
 
-char* symtypeDescription[] = {
+const char* symtypeDescription[] = {
         "SYM_NULL",
         "SYM_IDENTIFIER",
         "SYM_NUMBER",
@@ -138,7 +138,7 @@ typedef struct
 } instruction;
 
 //////////////////////////////////////////////////////////////////////
-char* err_msg[] =
+const char* err_msg[] =
 {
 /*  0 */    "",
 /*  1 */    "Found ':=' when expecting '='.",
@@ -192,7 +192,7 @@ char line[80];
 
 instruction code[CXMAX];
 
-char* word[NRW + 1] =
+const char* word[NRW + 1] =
 {
 	"", /* place holder */
 	"begin", "call", "const", "do", "end","if",
@@ -220,7 +220,7 @@ char csym[NSYM + 1] =
 int dx;  // data allocation index
 
 #define MAXINS   8
-char* mnemonic[MAXINS] =
+const char* mnemonic[MAXINS] =
 {
 	"LIT", "OPR", "LOD", "STO", "CAL", "INT", "JMP", "JPC"
 };
