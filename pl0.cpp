@@ -156,7 +156,7 @@ void getsym()
         getch();
         if (ch == '=') {
             sym = SYM_MULTIPLYBY;
-			printf("±£Áô×Ö: SYM_MULTIPLYBY - MULTIPLYBY\n");
+			printf("ä¿ç•™å­—: SYM_MULTIPLYBY - MULTIPLYBY\n");
             getch();
         } else {
             sym = SYM_TIMES;
@@ -165,7 +165,7 @@ void getsym()
         getch();
         if (ch == '=') {
             sym = SYM_DIVIDEBY;
-			printf("±£Áô×Ö: SYM_DIVIDEBY - DIVIDEBY\n");
+			printf("ä¿ç•™å­—: SYM_DIVIDEBY - DIVIDEBY\n");
             getch();
         } else if (ch == '*') {
             getch();
@@ -184,7 +184,7 @@ void getsym()
             getch();
             cc = ll;
             getsym();
-			printf("±£Áô×Ö: SYM_NOTE - //\n");
+			printf("ä¿ç•™å­—: SYM_NOTE - //\n");
         } else {
             sym = SYM_SLASH;
         }
@@ -549,7 +549,7 @@ void statement(symset fsys)
             if (i) {
                 gen(STO, level - mk->level, mk->address);
             }
-            /*ĞÂÔö²¿·Ö¿ªÊ¼*/
+            /*æ–°å¢éƒ¨åˆ†å¼€å§‹*/
 		} else if (sym == SYM_MULTIPLYBY) { // *=
             getsym();
             mk = (mask*) &table[i];
@@ -635,17 +635,17 @@ void statement(symset fsys)
 		statement(fsys);
 
         /**
-         * Ìø×ªµ½else
+         * è·³è½¬åˆ°else
          */
         if (sym == SYM_ELSE) {
             getsym();
-			printf("±£Áô×Ö: SYM_ELSE - else\n");
+			printf("ä¿ç•™å­—: SYM_ELSE - else\n");
             cx2 = cx;
-            gen(JMP, 0,0); // Ö±½ÓÌø×ª£¬Ö´ĞĞÍêthenºóÃæµÄÔòÌø×ªµ½Ìõ¼şÓï¾ä×îºóÃæ
-            code[cx1].a = cx; // »ØÌîÌõ¼şÌø×ª£¬Ìî»ØelseÓï¾ä¿éÖĞµÚÒ»¾ä
+            gen(JMP, 0,0); // ç›´æ¥è·³è½¬ï¼Œæ‰§è¡Œå®Œthenåé¢çš„åˆ™è·³è½¬åˆ°æ¡ä»¶è¯­å¥æœ€åé¢
+            code[cx1].a = cx; // å›å¡«æ¡ä»¶è·³è½¬ï¼Œå¡«å›elseè¯­å¥å—ä¸­ç¬¬ä¸€å¥
 
             statement(fsys);
-            code[cx2].a = cx; // »ØÌîÖ±½ÓÌø×ªµØÖ·
+            code[cx2].a = cx; // å›å¡«ç›´æ¥è·³è½¬åœ°å€
         } else {
             code[cx1].a = cx;
         }
@@ -704,7 +704,7 @@ void statement(symset fsys)
 	}
     else if (sym == SYM_FOR) {
         getsym();
-		printf("±£Áô×Ö: SYM_FOR - for\n");
+		printf("ä¿ç•™å­—: SYM_FOR - for\n");
         if (sym != SYM_IDENTIFIER) {
             error(13);
         }
@@ -714,7 +714,7 @@ void statement(symset fsys)
             error(11);
         } else if (table[i].kind != ID_VARIABLE) {
             error(12);
-            i = 0; // ±äÁ¿Î´ÉùÃ÷
+            i = 0; // å˜é‡æœªå£°æ˜
         }
 
         getsym();
@@ -724,7 +724,7 @@ void statement(symset fsys)
             error(13);
         }
 
-        set1 = createSet(SYM_STEP, SYM_NULL); // Ìí¼ÓSTEPµ½ºó¸ú·ûºÅ¼¯
+        set1 = createSet(SYM_STEP, SYM_NULL); // æ·»åŠ STEPåˆ°åè·Ÿç¬¦å·é›†
         set = appendSet(set1, fsys);
         expression(set);
         destroySet(set1);
@@ -733,12 +733,12 @@ void statement(symset fsys)
         mask *mk = (mask *)&table[i];
 
         if (i != 0) {
-            gen(STO, level - mk->level, mk->address); // Èô±äÁ¿ÒÑÉùÃ÷Ôò´æ´¢
+            gen(STO, level - mk->level, mk->address); // è‹¥å˜é‡å·²å£°æ˜åˆ™å­˜å‚¨
         }
 
         if (sym == SYM_STEP) {
             getsym();
-			printf("±£Áô×Ö: SYM_STEP - step\n");
+			printf("ä¿ç•™å­—: SYM_STEP - step\n");
         } else {
             error(27);
         }
@@ -749,22 +749,22 @@ void statement(symset fsys)
 
         set1 = createSet(SYM_UNTIL, SYM_NULL);
         set = appendSet(set1, fsys);
-        expression(set); // ±í´ïÊ½ÇóÖµ
+        expression(set); // è¡¨è¾¾å¼æ±‚å€¼
         destroySet(set1);
         destroySet(set);
 
-        gen(LOD, level - mk->level, mk->address); // È¡³ö±äÁ¿µÄÖµµ½Õ»¶¥
-        gen(OPR, 0, OPR_ADD); // ½«STEPÓÚ´ÎÕ»¶¥Ïà¼Ó
-        gen(STO, level - mk->level, mk->address); // ½«ĞÂÖµ´æÈë±äÁ¿
+        gen(LOD, level - mk->level, mk->address); // å–å‡ºå˜é‡çš„å€¼åˆ°æ ˆé¡¶
+        gen(OPR, 0, OPR_ADD); // å°†STEPäºæ¬¡æ ˆé¡¶ç›¸åŠ 
+        gen(STO, level - mk->level, mk->address); // å°†æ–°å€¼å­˜å…¥å˜é‡
 
         if (sym == SYM_UNTIL) {
             getsym();
-			printf("±£Áô×Ö: SYM_UNTIL - until\n");
+			printf("ä¿ç•™å­—: SYM_UNTIL - until\n");
         } else {
             error(28);
         }
 
-        code[cx1].a = cx; // »Øµ÷µÚÒ»´ÎforÑ­»·µØÖ·Ìø¹ıSTEPÓï¾ä
+        code[cx1].a = cx; // å›è°ƒç¬¬ä¸€æ¬¡forå¾ªç¯åœ°å€è·³è¿‡STEPè¯­å¥
 
         set1 = createSet(SYM_DO, SYM_NULL);
         set = appendSet(set1, fsys);
@@ -784,38 +784,38 @@ void statement(symset fsys)
 
         statement(fsys);
         gen(JMP, 0, cx3);
-        code[cx2].a = cx; // »ØÌîÌõ¼şÌø×ªµØÖ·
+        code[cx2].a = cx; // å›å¡«æ¡ä»¶è·³è½¬åœ°å€
 
     } else if (sym == SYM_STEP) {
         getsym();
-        printf("±£Áô×Ö: SYM_STEP - step\n");
+        printf("ä¿ç•™å­—: SYM_STEP - step\n");
     } else if (sym == SYM_UNTIL) {
         getsym();
-        printf("±£Áô×Ö: SYM_UNTIL - until\n");
+        printf("ä¿ç•™å­—: SYM_UNTIL - until\n");
     } else if (sym == SYM_DO) {
         getsym();
-        printf("±£Áô×Ö: SYM_DO - do\n");
+        printf("ä¿ç•™å­—: SYM_DO - do\n");
     } else if (sym == SYM_RETURN) {
         getsym();
-        printf("±£Áô×Ö: SYM_RETURN - return\n");
+        printf("ä¿ç•™å­—: SYM_RETURN - return\n");
     } else if (sym == SYM_PLUSBY) {
         getsym();
-        printf("±£Áô×Ö: SYM_PLUSBY - plusBy\n");
+        printf("ä¿ç•™å­—: SYM_PLUSBY - plusBy\n");
     } else if (sym == SYM_MINUSBY) {
         getsym();
-        printf("±£Áô×Ö: SYM_MINUSBY - minusBy\n");
+        printf("ä¿ç•™å­—: SYM_MINUSBY - minusBy\n");
     } else if (sym == SYM_MULTIPLYBY) {
         getsym();
-        printf("±£Áô×Ö: SYM_MULTIPLYBY - multiplyBy\n");
+        printf("ä¿ç•™å­—: SYM_MULTIPLYBY - multiplyBy\n");
     } else if (sym == SYM_DIVIDEBY) {
         getsym();
-        printf("±£Áô×Ö: SYM_DIVIDEBY - divideBy\n");
+        printf("ä¿ç•™å­—: SYM_DIVIDEBY - divideBy\n");
     } else if (sym == SYM_AND) {
         getsym();
-        printf("±£Áô×Ö: SYM_AND - and\n");
+        printf("ä¿ç•™å­—: SYM_AND - and\n");
     } else if (sym == SYM_OR) {
         getsym();
-        printf("±£Áô×Ö: SYM_OR - or\n");
+        printf("ä¿ç•™å­—: SYM_OR - or\n");
     }
     test(fsys, phi, 19);
 } // statement
@@ -1098,8 +1098,8 @@ int main ()
     time(&t);
     tmp_ptr = localtime(&t);
 
-    printf("Èí¼ş¹¤³Ì4°à3119005159Ğ¤Ñï\n");
-    printf("¿ªÊ¼µ÷ÊÔÊ±¼ä: %d.%d.%d %d:%d:%d\n",
+    printf("è½¯ä»¶å·¥ç¨‹4ç­3119005159è‚–æ‰¬\n");
+    printf("å¼€å§‹è°ƒè¯•æ—¶é—´: %d.%d.%d %d:%d:%d\n",
             (1900+tmp_ptr->tm_year),
             (1+tmp_ptr->tm_mon),
             tmp_ptr->tm_mday,
@@ -1156,7 +1156,7 @@ int main ()
 		printf("There are %d error(s) in PL/0 program.\n", err);
     time(&t);
     tmp_ptr = localtime(&t);
-    printf("\n½áÊøµ÷ÊÔÊ±¼ä: %d.%d.%d %d:%d:%d\n",
+    printf("\nç»“æŸè°ƒè¯•æ—¶é—´: %d.%d.%d %d:%d:%d\n",
            (1900+tmp_ptr->tm_year),
            (1+tmp_ptr->tm_mon),
            tmp_ptr->tm_mday,
