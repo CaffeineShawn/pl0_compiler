@@ -1,0 +1,11 @@
+var a, b;
+begin 
+    b:=0;
+    for a:=1 step 1 until 10 do
+        b+=1;
+    b*=2;
+    b/=2;
+    &;
+    // 这是注释
+    ||;
+end

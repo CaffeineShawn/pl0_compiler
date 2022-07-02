@@ -1,6 +1,6 @@
 #include <cstdio>
 
-#define NRW        17     // number of reserved words
+#define NRW        18     // number of reserved words
 #define TXMAX      500    // length of identifier table
 #define MAXNUMLEN  14     // maximum number of digits in numbers
 #define NSYM       13     // maximum number of symbols in array ssym and csym
@@ -59,7 +59,8 @@ enum symtype
     SYM_MULTIPLYBY,     // 38
     SYM_DIVIDEBY,       // 39
     SYM_AND,            // 40
-    SYM_OR              // 41
+    SYM_OR,             // 41
+    SYM_NOTE            // 42
     /***新增部分***/
 };
 
@@ -107,7 +108,8 @@ const char* symtypeDescription[] = {
         "SYM_MULTIPLYBY",
         "SYM_DIVIDEBY",
         "SYM_AND",
-        "SYM_OR"
+        "SYM_OR",
+        "SYM_NOTE"
         /***新增部分***/
 };
 
@@ -196,13 +198,13 @@ const char* word[NRW + 1] =
 {
 	"", /* place holder */
 	"begin", "call", "const", "do", "end","if",
-	"odd", "procedure", "then", "var", "while", "else", "for", "step", "until", "do", "return"
+	"odd", "procedure", "then", "var", "while", "else", "for", "step", "until", "do", "return", "//"
 };
 
 int wsym[NRW + 1] =
 {
 	SYM_NULL, SYM_BEGIN, SYM_CALL, SYM_CONST, SYM_DO, SYM_END,
-	SYM_IF, SYM_ODD, SYM_PROCEDURE, SYM_THEN, SYM_VAR, SYM_WHILE, SYM_ELSE, SYM_FOR, SYM_STEP, SYM_UNTIL, SYM_DO, SYM_RETURN
+	SYM_IF, SYM_ODD, SYM_PROCEDURE, SYM_THEN, SYM_VAR, SYM_WHILE, SYM_ELSE, SYM_FOR, SYM_STEP, SYM_UNTIL, SYM_DO, SYM_RETURN, SYM_NOTE
 };
 
 int ssym[NSYM + 1] =

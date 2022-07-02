@@ -1,5 +1,6 @@
 // pl0 compiler source code
 
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
@@ -155,6 +156,7 @@ void getsym()
         getch();
         if (ch == '=') {
             sym = SYM_MULTIPLYBY;
+			printf("保留字: SYM_MULTIPLYBY - MULTIPLYBY\n");
             getch();
         } else {
             sym = SYM_TIMES;
@@ -163,6 +165,7 @@ void getsym()
         getch();
         if (ch == '=') {
             sym = SYM_DIVIDEBY;
+			printf("保留字: SYM_DIVIDEBY - DIVIDEBY\n");
             getch();
         } else if (ch == '*') {
             getch();
@@ -182,6 +185,7 @@ void getsym()
                 getch();
             }
             getsym();
+			printf("保留字: SYM_NOTE - //\n");
         } else {
             sym = SYM_SLASH;
         }
@@ -636,6 +640,7 @@ void statement(symset fsys)
          */
         if (sym == SYM_ELSE) {
             getsym();
+			printf("保留字: SYM_ELSE - else\n");
             cx2 = cx;
             gen(JMP, 0,0); // 直接跳转，执行完then后面的则跳转到条件语句最后面
             code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句
@@ -700,7 +705,7 @@ void statement(symset fsys)
 	}
     else if (sym == SYM_FOR) {
         getsym();
-
+		printf("保留字: SYM_FOR - for\n");
         if (sym != SYM_IDENTIFIER) {
             error(13);
         }
@@ -734,6 +739,7 @@ void statement(symset fsys)
 
         if (sym == SYM_STEP) {
             getsym();
+			printf("保留字: SYM_STEP - step\n");
         } else {
             error(27);
         }
@@ -754,6 +760,7 @@ void statement(symset fsys)
 
         if (sym == SYM_UNTIL) {
             getsym();
+			printf("保留字: SYM_UNTIL - until\n");
         } else {
             error(28);
         }
@@ -1084,7 +1091,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/for.pl0";
+	char s[80] = "test/reservedwords.pl0";
 	int i;
 	symset set, set1, set2;
     time_t t;
