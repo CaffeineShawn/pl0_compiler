@@ -1,1 +1,1 @@
-cmake --build /Users/shawyoung/Documents/pl0c/cmake-build-debug --target pl0
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=$NINJA -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -G Ninja -S /Users/shawyoung/Documents/pl0c -B /Users/shawyoung/Documents/pl0c/cmake-build-debug
