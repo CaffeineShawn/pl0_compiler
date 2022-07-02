@@ -200,7 +200,10 @@ void getsym()
     } else if (ch == '&') {
         getch();
         sym = SYM_AND;
-    } else { // other tokens
+    } else if (ch == '#') {
+		getch();
+		error(29);
+	} else { // other tokens
 		i = NSYM;
 		csym[0] = ch;
 		while (csym[i--] != ch);
@@ -641,7 +644,7 @@ void statement(symset fsys)
          */
         if (sym == SYM_ELSE) {
             getsym();
-			printf("保留字: SYM_ELSE - else\n");
+			// printf("保留字: SYM_ELSE - else\n");
             cx2 = cx;
             gen(JMP, 0,0); // 直接跳转，执行完then后面的则跳转到条件语句最后面
             code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句
@@ -706,7 +709,7 @@ void statement(symset fsys)
 	}
     else if (sym == SYM_FOR) {
         getsym();
-		printf("保留字: SYM_FOR - for\n");
+		// printf("保留字: SYM_FOR - for\n");
         if (sym != SYM_IDENTIFIER) {
             error(13);
         }
@@ -740,7 +743,7 @@ void statement(symset fsys)
 
         if (sym == SYM_STEP) {
             getsym();
-			printf("保留字: SYM_STEP - step\n");
+			// printf("保留字: SYM_STEP - step\n");
         } else {
             error(27);
         }
@@ -761,7 +764,7 @@ void statement(symset fsys)
 
         if (sym == SYM_UNTIL) {
             getsym();
-			printf("保留字: SYM_UNTIL - until\n");
+			// printf("保留字: SYM_UNTIL - until\n");
         } else {
             error(28);
         }
@@ -1092,7 +1095,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/for.pl0";
+	char s[80] = "test/bad.pl0";
 	int i;
 	symset set, set1, set2;
     time_t t;

@@ -171,7 +171,7 @@ const char* err_msg[] =
 /* 26 */    "A single / comment is not allowed.",
 /* 27 */    "Step length is ambiguous.",
 /* 28 */    "Until condition is ambiguous.",
-/* 29 */    "",
+/* 29 */    "'#' symbol is deprecated, use '!=' instead.",
 /* 30 */    "",
 /* 31 */    "",
 /* 32 */    "There are too many levels."
