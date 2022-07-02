@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <ctime>
 
 #include "pl0.h"
 #include "set.cpp"
@@ -524,7 +525,6 @@ void statement(symset fsys)
 {
 	int i, cx1, cx2, cx3;
 	symset set1, set;
-//    printSet(fsys, symtypeDescription);
 	if (sym == SYM_IDENTIFIER)
 	{ // variable assignment
 		mask* mk;
@@ -538,7 +538,6 @@ void statement(symset fsys)
 			i = 0;
 		}
 		getsym();
-        /*新增部分开始*/
         if (sym == SYM_BECOMES)
 		{
 			getsym();
@@ -547,7 +546,8 @@ void statement(symset fsys)
             if (i) {
                 gen(STO, level - mk->level, mk->address);
             }
-		} else if (sym == SYM_MULTIPLYBY) {
+            /*新增部分开始*/
+		} else if (sym == SYM_MULTIPLYBY) { // *=
             getsym();
             mk = (mask*) &table[i];
             gen(LOD, level - mk-> level, mk->address);
@@ -556,7 +556,7 @@ void statement(symset fsys)
                 gen(OPR, 0, OPR_MUL);
                 gen(STO, level - mk->level, mk->address);
             }
-        } else if (sym == SYM_DIVIDEBY) {
+        } else if (sym == SYM_DIVIDEBY) { // /=
             getsym();
             mk = (mask*) &table[i];
             gen(LOD, level - mk-> level, mk->address);
@@ -565,7 +565,7 @@ void statement(symset fsys)
                 gen(OPR, 0, OPR_DIV);
                 gen(STO, level - mk->level, mk->address);
             }
-        } else if (sym == SYM_PLUSBY) {
+        } else if (sym == SYM_PLUSBY) { // +=
             getsym();
             mk = (mask*) &table[i];
             gen(LOD, level - mk-> level, mk->address);
@@ -574,7 +574,7 @@ void statement(symset fsys)
                 gen(OPR, 0, OPR_ADD);
                 gen(STO, level - mk->level, mk->address);
             }
-        } else if (sym == SYM_MINUSBY) {
+        } else if (sym == SYM_MINUSBY) { // -=
             getsym();
             mk = (mask*) &table[i];
             gen(LOD, level - mk-> level, mk->address);
@@ -622,12 +622,9 @@ void statement(symset fsys)
 		condition(set);
         destroySet(set1);
         destroySet(set);
-		if (sym == SYM_THEN)
-		{
+		if (sym == SYM_THEN) {
 			getsym();
-		}
-		else
-		{
+		} else {
 			error(16); // 'then' expected.
 		}
 		cx1 = cx;
@@ -642,7 +639,6 @@ void statement(symset fsys)
             cx2 = cx;
             gen(JMP, 0,0); // 直接跳转，执行完then后面的则跳转到条件语句最后面
             code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句
-
 
             statement(fsys);
             code[cx2].a = cx; // 回填直接跳转地址
@@ -714,7 +710,7 @@ void statement(symset fsys)
             error(11);
         } else if (table[i].kind != ID_VARIABLE) {
             error(12);
-            i = 0;
+            i = 0; // 变量未声明
         }
 
         getsym();
@@ -724,7 +720,7 @@ void statement(symset fsys)
             error(13);
         }
 
-        set1 = createSet(SYM_STEP, SYM_NULL);
+        set1 = createSet(SYM_STEP, SYM_NULL); // 添加STEP到后跟符号集
         set = appendSet(set1, fsys);
         expression(set);
         destroySet(set1);
@@ -733,7 +729,7 @@ void statement(symset fsys)
         mask *mk = (mask *)&table[i];
 
         if (i != 0) {
-            gen(STO, level - mk->level, mk->address);
+            gen(STO, level - mk->level, mk->address); // 若变量已声明则存储
         }
 
         if (sym == SYM_STEP) {
@@ -748,13 +744,13 @@ void statement(symset fsys)
 
         set1 = createSet(SYM_UNTIL, SYM_NULL);
         set = appendSet(set1, fsys);
-        expression(set);
+        expression(set); // 表达式求值
         destroySet(set1);
         destroySet(set);
 
-        gen(LOD, level - mk->level, mk->address);
-        gen(OPR, 0, OPR_ADD);
-        gen(STO, level - mk->level, mk->address);
+        gen(LOD, level - mk->level, mk->address); // 取出变量的值到栈顶
+        gen(OPR, 0, OPR_ADD); // 将STEP于次栈顶相加
+        gen(STO, level - mk->level, mk->address); // 将新值存入变量
 
         if (sym == SYM_UNTIL) {
             getsym();
@@ -762,7 +758,7 @@ void statement(symset fsys)
             error(28);
         }
 
-        code[cx1].a = cx;
+        code[cx1].a = cx; // 回调第一次for循环地址跳过STEP语句
 
         set1 = createSet(SYM_DO, SYM_NULL);
         set = appendSet(set1, fsys);
@@ -782,7 +778,7 @@ void statement(symset fsys)
 
         statement(fsys);
         gen(JMP, 0, cx3);
-        code[cx2].a = cx;
+        code[cx2].a = cx; // 回填条件跳转地址
 
     } else if (sym == SYM_STEP) {
         getsym();
@@ -1088,12 +1084,24 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/neq.pl0";
+	char s[80];
 	int i;
 	symset set, set1, set2;
+    time_t t;
+    struct tm *tmp_ptr = NULL;
+    time(&t);
+    tmp_ptr = localtime(&t);
 
-//	printf("Please input source file name: "); // get file name to be compiled
-//	scanf("%s", s);
+    printf("软件工程4班3119005159肖扬\n");
+    printf("开始调试时间: %d.%d.%d %d:%d:%d\n",
+            (1900+tmp_ptr->tm_year),
+            (1+tmp_ptr->tm_mon),
+            tmp_ptr->tm_mday,
+            tmp_ptr->tm_hour,
+            tmp_ptr->tm_min,
+            tmp_ptr->tm_sec);
+	printf("Please input source file name: "); // get file name to be compiled
+	scanf("%s", s);
 	if ((infile = fopen(s, "r")) == NULL)
 	{
 		printf("File %s can't be opened.\n", s);
@@ -1140,6 +1148,15 @@ int main ()
 		interpret();
 	else
 		printf("There are %d error(s) in PL/0 program.\n", err);
+    time(&t);
+    tmp_ptr = localtime(&t);
+    printf("\n结束调试时间: %d.%d.%d %d:%d:%d\n",
+           (1900+tmp_ptr->tm_year),
+           (1+tmp_ptr->tm_mon),
+           tmp_ptr->tm_mday,
+           tmp_ptr->tm_hour,
+           tmp_ptr->tm_min,
+           tmp_ptr->tm_sec);
 //	listcode(0, cx);
 } // main
 
