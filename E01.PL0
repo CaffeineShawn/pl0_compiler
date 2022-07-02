@@ -1,6 +1,0 @@
-const a=10;
-var b,c;
-begin
-    b:=1;
-    c:=a;
-end.
