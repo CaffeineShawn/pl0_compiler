@@ -1,0 +1,1 @@
+cmake --build /Users/shawyoung/Documents/pl0c/cmake-build-debug --target pl0
