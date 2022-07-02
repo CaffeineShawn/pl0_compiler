@@ -231,7 +231,7 @@ void gen(int x, int y, int z)
 void test(symset s1, symset s2, int n)
 {
 	symset s;
-
+	// printSet(s1, symtypeDescription);
 	if (!checkIfInSet(sym, s1))
 	{
 		error(n);
@@ -1084,7 +1084,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80];
+	char s[80] = "test/for.pl0";
 	int i;
 	symset set, set1, set2;
     time_t t;
@@ -1100,8 +1100,8 @@ int main ()
             tmp_ptr->tm_hour,
             tmp_ptr->tm_min,
             tmp_ptr->tm_sec);
-	printf("Please input source file name: "); // get file name to be compiled
-	scanf("%s", s);
+	// printf("Please input source file name: "); // get file name to be compiled
+	// scanf("%s", s);
 	if ((infile = fopen(s, "r")) == NULL)
 	{
 		printf("File %s can't be opened.\n", s);

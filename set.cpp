@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -9,6 +10,8 @@ symset appendSet(symset s1, symset s2)
 	snode* p;
 	
 	s = p = (snode*) malloc(sizeof(snode));
+	s->elem = 0;
+	p->elem = 0;
 	while (s1 && s2)
 	{
 		p->next = (snode*) malloc(sizeof(snode));
@@ -69,6 +72,7 @@ symset createSet(int elem, .../* SYM_NULL */)
 	symset s;
 
 	s = (snode*) malloc(sizeof(snode));
+	s->elem = 0;
 	s->next = NULL;
 
 	va_start(list, elem);
@@ -105,9 +109,13 @@ int checkIfInSet(int elem, symset s)
 		return 0;
 } // checkIfInSet
 
-void printSet(symset s, char *symtypeDesc[]) {
+void printSet(symset s, const char *symtypeDesc[]) {
     while (s->next) {
-        printf("%s->", symtypeDesc[s->elem]);
+		int idx = s->elem;
+		if (s->elem <= 41) {
+        	printf("%s->", symtypeDesc[s->elem]); 
+		}
+
         s=s->next;
     }
     printf("END \r\n");

@@ -1,3 +1,3 @@
-cmake . -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build . --config Debug
-readelf -S pl0 | grep debug
+readelf -S compiler | grep debug

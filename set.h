@@ -13,7 +13,7 @@ symset createSet(int elem, .../* SYM_NULL */);
 void destroySet(symset s);
 symset appendSet(symset s1, symset s2);
 int checkIfInSet(int elem, symset s);
-void printSet(symset s, char *symtypeDesc[]);
+void printSet(symset s, const char *symtypeDesc[]);
 
 #endif
 // EOF set.h
