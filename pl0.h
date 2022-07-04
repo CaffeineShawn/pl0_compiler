@@ -1,8 +1,11 @@
 #include <cstdio>
 
+// 修改保留符号数量，改为18
 #define NRW        18     // number of reserved words
 #define TXMAX      500    // length of identifier table
 #define MAXNUMLEN  14     // maximum number of digits in numbers
+
+// 修改单字符符号数量，改为13
 #define NSYM       13     // maximum number of symbols in array ssym and csym
 #define MAXIDLEN   10     // length of identifiers
 
@@ -64,6 +67,7 @@ enum symtype
     /***新增部分***/
 };
 
+/***DEBUG***/
 const char* symtypeDescription[] = {
         "SYM_NULL",
         "SYM_IDENTIFIER",
@@ -112,6 +116,7 @@ const char* symtypeDescription[] = {
         "SYM_NOTE"
         /***新增部分***/
 };
+/***DEBUG***/
 
 enum idtype
 {
@@ -168,10 +173,14 @@ const char* err_msg[] =
 /* 23 */    "The symbol can not be followed by a factor.",
 /* 24 */    "The symbol can not be as the beginning of an expression.",
 /* 25 */    "The number is too great.",
+
+/***新增部分***/
 /* 26 */    "A single / comment is not allowed.",
 /* 27 */    "Step length is ambiguous.",
 /* 28 */    "Until condition is ambiguous.",
 /* 29 */    "'#' symbol is deprecated, use '!=' instead.",
+/***新增部分***/
+
 /* 30 */    "",
 /* 31 */    "",
 /* 32 */    "There are too many levels."

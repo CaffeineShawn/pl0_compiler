@@ -127,6 +127,7 @@ void getsym()
 			sym = SYM_LES;     // <
 		}
 	}
+	/***新增部分***/
     else if (ch == '!')
     {
         getch();
@@ -190,7 +191,6 @@ void getsym()
         } else {
             sym = SYM_SLASH;
         }
-
     } else if (ch == '|') {
         getch();
         if (ch == '|') {
@@ -203,7 +203,10 @@ void getsym()
     } else if (ch == '#') {
 		getch();
 		error(29);
-	} else { // other tokens
+	} 
+	/***新增部分***/
+	
+	else { // other tokens
 		i = NSYM;
 		csym[0] = ch;
 		while (csym[i--] != ch);
@@ -625,9 +628,9 @@ void statement(symset fsys)
 	else if (sym == SYM_IF)
 	{ // if statement
 		getsym();
-		set1 = createSet(SYM_THEN, SYM_DO, SYM_ELSE, SYM_NULL);
+		set1 = createSet(SYM_THEN, SYM_DO, SYM_ELSE, SYM_NULL); // 添加后跟符号集
 		set = appendSet(set1, fsys);
-		condition(set);
+		condition(set); // if条件表达式求值
         destroySet(set1);
         destroySet(set);
 		if (sym == SYM_THEN) {
@@ -636,8 +639,8 @@ void statement(symset fsys)
 			error(16); // 'then' expected.
 		}
 		cx1 = cx;
-		gen(JPC, 0, 0);
-		statement(fsys);
+		gen(JPC, 0, 0); // 生成条件跳转指令，等待下文else语句回填地址
+		statement(fsys); // 执行if then对应的语句块
 
         /**
          * 跳转到else
@@ -646,13 +649,13 @@ void statement(symset fsys)
             getsym();
 			// printf("保留字: SYM_ELSE - else\n");
             cx2 = cx;
-            gen(JMP, 0,0); // 直接跳转，执行完then后面的则跳转到条件语句最后面
-            code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句
+            gen(JMP, 0,0); // 若if条件表达式为真则跳转到if语句块结束地址
+            code[cx1].a = cx; // 回填条件跳转，填回else语句块中第一句，对应若if条件表达式为假的情况
 
-            statement(fsys);
-            code[cx2].a = cx; // 回填直接跳转地址
+            statement(fsys); // 执行else对应的语句块
+            code[cx2].a = cx; // 回填if语句块结束地址
         } else {
-            code[cx1].a = cx;
+            code[cx1].a = cx; // 如果没有else语句则直接回填为if语句块结束地址
         }
 	}
 	else if (sym == SYM_BEGIN)
@@ -713,7 +716,7 @@ void statement(symset fsys)
         if (sym != SYM_IDENTIFIER) {
             error(13);
         }
-        i = position(id);
+        i = position(id); // 找到变量在符号表中的位置
 
         if (i == 0) {
             error(11);
@@ -1095,7 +1098,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/bad.pl0";
+	char s[80] = "test/minus.pl0";
 	int i;
 	symset set, set1, set2;
     time_t t;
