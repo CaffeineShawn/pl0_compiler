@@ -1098,7 +1098,7 @@ void interpret()
 int main ()
 {
 	FILE* hbin;
-	char s[80] = "test/minus.pl0";
+	char s[80];
 	int i;
 	symset set, set1, set2;
     time_t t;
@@ -1114,8 +1114,8 @@ int main ()
             tmp_ptr->tm_hour,
             tmp_ptr->tm_min,
             tmp_ptr->tm_sec);
-	// printf("Please input source file name: "); // get file name to be compiled
-	// scanf("%s", s);
+	 printf("Please input source file name: "); // get file name to be compiled
+	 scanf("%s", s);
 	if ((infile = fopen(s, "r")) == NULL)
 	{
 		printf("File %s can't be opened.\n", s);
