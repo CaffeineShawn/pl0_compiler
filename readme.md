@@ -6,7 +6,7 @@ sh debug.sh
 ./compiler
 ```
 2. 或者使用CLion集成开发环境打开工程根目录
-## 使用gcc/Clang编译pl0.cpp
+## 使用GCC/Clang编译pl0.cpp
 ```shell
 clang pl0.cpp
 ./a.out
